@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>RFID Reader</title>
+</head>
+<body>
+	<h1>Connect to RFID Reader</h1>
+	<br>
+	<label for="connectType">Connection Type:</label>
+	<select id="connectType">
+		<option value="USB">USB</option>
+	</select>
+	<br>
+	<label for="availableDevice">Available Devices:</label>
+	<select id="availableDevice">
+		<option value="" disabled selected>Select your RFID device</option>
+		<!-- Devices will be added here by JS -->
+	</select>
+	<button id="connectBtn">Connect</button>
+	<div id="status"></div>
+
+	<script>
+
+		const electron_1 = require("electron");
+		// Function to populate available devices
+		function populateAvailableDevices(j) {
+			let devices = JSON.parse(j).devices;
+			const availableDeviceSelect = document.getElementById("availableDevice");
+			availableDeviceSelect.innerHTML = ""; // Clear existing options
+			devices.forEach((device, index) => {
+				const option = document.createElement("option");
+				option.value = index.toString(); // Using index as the value
+				option.textContent = device; // Assuming device has a string representation
+				availableDeviceSelect.appendChild(option);
+			});
+		}
+
+		window.onload = () => {
+			electron_1.ipcRenderer.send("getUsbDeviceList");
+			electron_1.ipcRenderer.on("returnUsbDeviceList", (event, devices) => {
+				populateAvailableDevices(devices);
+			});
+		};
+		// Connect button event
+		document.getElementById("connectBtn")?.addEventListener("click", () => {
+			const connectType = document.getElementById("connectType").value;
+			const availableDevice = document.getElementById("availableDevice");
+			const selectedDeviceIndex = availableDevice ? availableDevice.value : null;
+			if (connectType === "USB" && selectedDeviceIndex !== null) {
+				electron_1.ipcRenderer.send("connect-reader", selectedDeviceIndex); // Send index to connect
+			}
+		});
+
+	</script>
+</body>
+</html>
