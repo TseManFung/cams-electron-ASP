@@ -42,7 +42,7 @@ namespace Campus_Asset_Management_System
         /// <param name="tag">表示已讀取的標籤數據的模型對象。</param>
         public void OutPutTags(Tag_Model tag)
         {
-            throw new NotImplementedException();
+           
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Campus_Asset_Management_System
         /// </summary>
         public void OutPutTagsOver()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("OutPutTagsOver");
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Campus_Asset_Management_System
         /// <param name="connID">表示當前連接的 ID。</param>
         public void PortClosing(string connID)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("will not use PortClosing");
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Campus_Asset_Management_System
         /// <param name="connID">表示當前客戶端的連接 ID。</param>
         public void PortConnecting(string connID)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("will not use PortConnecting");
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Campus_Asset_Management_System
         /// <param name="msg">表示要輸出的調試消息字符串。</param>
         public void WriteDebugMsg(string msg)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(msg);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Campus_Asset_Management_System
         /// <param name="msg">表示要記錄的日誌消息字符串。</param>
         public void WriteLog(string msg)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(msg);
         }
     }
 }
