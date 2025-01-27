@@ -1,4 +1,5 @@
-﻿using ElectronNET.API;
+﻿using Campus_Asset_Management_System;
+using ElectronNET.API;
 using ElectronNET.API.Entities;
 using RFIDReaderAPI;
 
@@ -33,7 +34,6 @@ app.MapControllerRoute(
 
 await app.StartAsync(); // Start the application asynchronously
 
-// Open the Electron window
-await Electron.WindowManager.CreateWindowAsync();
-
+// Initialize Electron
+await ElectronBootstrap.InitAsync(); // 確保這裡調用 InitAsync
 app.WaitForShutdown(); // Wait for the application to shut down

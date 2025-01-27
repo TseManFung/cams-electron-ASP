@@ -1,5 +1,6 @@
 ﻿using ElectronNET.API.Entities;
 using ElectronNET.API;
+using System.Drawing;
 
 namespace Campus_Asset_Management_System
 {
@@ -11,17 +12,24 @@ namespace Campus_Asset_Management_System
             {
                 var windowOptions = new BrowserWindowOptions
                 {
-                    Width = 800,
-                    Height = 600,
+                    MinWidth = 800,
+                    MinHeight = 600,
+                    Title = "Campus Asset Management System",
+                    Icon = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "favicon.ico"),
                     WebPreferences = new WebPreferences
                     {
                         NodeIntegration = true,
-                        ContextIsolation = false
-                    }
+                        ContextIsolation = false,
+                        DevTools = true // TODO: turn off in production
+                    },
+                    AutoHideMenuBar = true,
                 };
 
                 var window = await Electron.WindowManager.CreateWindowAsync(windowOptions);
                 window.OnClosed += () => { Electron.App.Exit(); };
+
+                MenuItem[] menuitem = new MenuItem[] { };
+                Electron.Menu.SetApplicationMenu(menuitem);
             }
         }
     }

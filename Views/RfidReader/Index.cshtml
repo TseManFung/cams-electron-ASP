@@ -43,20 +43,36 @@
 				availableDeviceSelect.appendChild(option);
 			});
 		}
+		function showDegubMsg(e) {
+			electron_1.ipcRenderer.on(e, (event, message) => {
+				document.getElementById("output").innerHTML += `<span style="color:red;">${e}</span>: ${message}<br>`;
+			})
+		}
 
-		window.onload = () => {
-			electron_1.ipcRenderer.send("getUsbDeviceList");
+		function addIpcRendererOn() {
+			// 小心不要重覆開event listenner
 			electron_1.ipcRenderer.on("replyGetUsbDeviceList", (event, devices) => {
 				populateAvailableDevices(devices);
 			});
+
+			showDegubMsg("replyConnectUsbRfidReader");
+			showDegubMsg("replySingleRead");
+			showDegubMsg("newScannedTag");
+			showDegubMsg("scanningOver");
+
+		}
+
+		window.onload = () => {
+			addIpcRendererOn() // 先開好event listenner最安全
+
+			electron_1.ipcRenderer.send("getUsbDeviceList");
+			
 		};
 		// Connect button event
 		document.getElementById("connectBtn")?.addEventListener("click", () => {
 			// 我在這hardcode 0，實際上應該是從availableDevice取得
 			electron_1.ipcRenderer.send("connectUsbRfidReader", 0);
-			electron_1.ipcRenderer.on("replyConnectUsbRfidReader", (event, message) => {
-				document.getElementById("output").innerHTML += "replyConnectUsbRfidReader: " + message + "<br>";
-			})
+			
 		});
 
 		document.getElementById("execute")?.addEventListener("click", () => {
@@ -69,15 +85,7 @@
 
 			// read Sigle
 			electron_1.ipcRenderer.send("singleRead", 0);
-			electron_1.ipcRenderer.on("replySingleRead", (event, message) => {
-				document.getElementById("output").innerHTML += "replySingleRead: " + message + "<br>";
-			})
-			electron_1.ipcRenderer.on("newScannedTag", (event, message) => {
-				document.getElementById("output").innerHTML += "newScannedTag: " + message + "<br>";
-			})
-			electron_1.ipcRenderer.on("scanningOver", (event, message) => {
-				document.getElementById("output").innerHTML += "scanningOver: " + message + "<br>";
-			})
+
 		});
 
 	</script>

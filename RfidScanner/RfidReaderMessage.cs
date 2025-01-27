@@ -24,7 +24,7 @@ namespace Campus_Asset_Management_System.RfidScanner
         /// <param name="gpi_model">表示 GPI 事件的數據模型對象。</param>
         public void GPIControlMsg(GPI_Model gpi_model)
         {
-            Console.WriteLine("We may not use GPIControlMsg, if need to use please call me");
+            Console.WriteLine("GPIControlMs: We may not use GPIControlMsg, if need to use please call me");
         }
 
         /// <summary>
@@ -33,7 +33,17 @@ namespace Campus_Asset_Management_System.RfidScanner
         /// <param name="tag">表示已讀取的標籤數據的模型對象。</param>
         public void OutPutTags(Tag_Model tag)
         {
-            Electron.IpcMain.Send(funcGetMainWindow(), "newScannedTag", JsonMaker.makeTagJson(tag));
+            try
+            {
+                if (tag == null || tag.Result != 0x00) { 
+                    throw new Exception("Tag is null");
+                };
+                Electron.IpcMain.Send(funcGetMainWindow(), "newScannedTag", JsonMaker.makeTagJson(tag));
+            }
+            catch (Exception e)
+            {
+                Electron.IpcMain.Send(funcGetMainWindow(), "newScannedTag", JsonMaker.makeErrorJson(e));
+            }
         }
 
         /// <summary>
@@ -69,7 +79,7 @@ namespace Campus_Asset_Management_System.RfidScanner
         /// <param name="msg">表示要輸出的調試消息字符串。</param>
         public void WriteDebugMsg(string msg)
         {
-            Console.WriteLine(msg);
+            Console.WriteLine("WriteDebugMsg: "+msg);
         }
 
         /// <summary>
@@ -78,7 +88,7 @@ namespace Campus_Asset_Management_System.RfidScanner
         /// <param name="msg">表示要記錄的日誌消息字符串。</param>
         public void WriteLog(string msg)
         {
-            Console.WriteLine(msg);
+            Console.WriteLine("WriteLog: " + msg);
         }
 
         #endregion
