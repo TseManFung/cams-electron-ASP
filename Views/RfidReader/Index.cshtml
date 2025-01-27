@@ -19,9 +19,16 @@
 		<!-- Devices will be added here by JS -->
 	</select>
 	<button id="connectBtn">Connect</button>
-	<div id="status"></div>
+	<br>
+	<button id="execute">Execute</button><button id="clear">Clear</button>
+	<br>
+	<div id="output"></div>
 
 	<script>
+
+		document.getElementById("clear")?.addEventListener("click", () => {
+			document.getElementById("output").innerHTML = "";
+		});
 
 		const electron_1 = require("electron");
 		// Function to populate available devices
@@ -39,18 +46,38 @@
 
 		window.onload = () => {
 			electron_1.ipcRenderer.send("getUsbDeviceList");
-			electron_1.ipcRenderer.on("returnUsbDeviceList", (event, devices) => {
+			electron_1.ipcRenderer.on("replyGetUsbDeviceList", (event, devices) => {
 				populateAvailableDevices(devices);
 			});
 		};
 		// Connect button event
 		document.getElementById("connectBtn")?.addEventListener("click", () => {
-			const connectType = document.getElementById("connectType").value;
-			const availableDevice = document.getElementById("availableDevice");
-			const selectedDeviceIndex = availableDevice ? availableDevice.value : null;
-			if (connectType === "USB" && selectedDeviceIndex !== null) {
-				electron_1.ipcRenderer.send("connect-reader", selectedDeviceIndex); // Send index to connect
-			}
+			// 我在這hardcode 0，實際上應該是從availableDevice取得
+			electron_1.ipcRenderer.send("connectUsbRfidReader", 0);
+			electron_1.ipcRenderer.on("replyConnectUsbRfidReader", (event, message) => {
+				document.getElementById("output").innerHTML += "replyConnectUsbRfidReader: " + message + "<br>";
+			})
+		});
+
+		document.getElementById("execute")?.addEventListener("click", () => {
+			// test area
+			// GetRfidReaderInformation
+			// electron_1.ipcRenderer.send("getRfidReaderInformation",0);
+			// electron_1.ipcRenderer.on("replyGetRfidReaderInformation", (event, message) => {
+			//     document.getElementById("output").innerHTML += message + "<br>";
+			// })
+
+			// read Sigle
+			electron_1.ipcRenderer.send("singleRead", 0);
+			electron_1.ipcRenderer.on("replySingleRead", (event, message) => {
+				document.getElementById("output").innerHTML += "replySingleRead: " + message + "<br>";
+			})
+			electron_1.ipcRenderer.on("newScannedTag", (event, message) => {
+				document.getElementById("output").innerHTML += "newScannedTag: " + message + "<br>";
+			})
+			electron_1.ipcRenderer.on("scanningOver", (event, message) => {
+				document.getElementById("output").innerHTML += "scanningOver: " + message + "<br>";
+			})
 		});
 
 	</script>
