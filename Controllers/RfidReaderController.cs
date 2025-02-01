@@ -15,6 +15,7 @@ namespace Campus_Asset_Management_System.Controllers
     {
         private readonly ILogger<RfidReaderController> _logger;
         private readonly UsbRfidScanner _rfidScanner;
+        
 
         public RfidReaderController(ILogger<RfidReaderController> logger)
         {
@@ -237,13 +238,50 @@ namespace Campus_Asset_Management_System.Controllers
             }
             );
 
+
             // 開始循環讀取
+            Electron.IpcMain.On("startLoopRead", (indexOfConnectedDeviceList) =>
+            {
+                try
+                {
+                    int i = Convert.ToInt32(indexOfConnectedDeviceList);
+                    Electron.IpcMain.Send(getMainWindow(), "replyStartLoopRead", _rfidScanner.StartLoopRead(i));
+                }
+                catch (Exception e)
+                {
+                    Electron.IpcMain.Send(getMainWindow(), "replyStartLoopRead", JsonMaker.makeErrorJson(e));
+                }
+            }
+            );
 
             // 停止循環讀取
+            Electron.IpcMain.On("stopLoopRead", (indexOfConnectedDeviceList) =>
+            {
+                try
+                {
+                    int i = Convert.ToInt32(indexOfConnectedDeviceList);
+                    Electron.IpcMain.Send(getMainWindow(), "replyStopLoopRead", _rfidScanner.StopLoopRead(i));
+                }
+                catch (Exception e)
+                {
+                    Electron.IpcMain.Send(getMainWindow(), "replyStopLoopRead", JsonMaker.makeErrorJson(e));
+                }
+            }
+            );
 
-            // 寫入data to 標籤
-
-            // lock 標籤
+            // set password
+            Electron.IpcMain.On("setPassword", (indexOfConnectedDeviceList) =>
+            {
+                try
+                {
+                    int i = Convert.ToInt32(indexOfConnectedDeviceList);
+                    Electron.IpcMain.Send(getMainWindow(), "replySetPassword", _rfidScanner.SetTagPassword(i));
+                }
+                catch (Exception e)
+                {
+                    Electron.IpcMain.Send(getMainWindow(), "replySetPassword", JsonMaker.makeErrorJson(e));
+                }
+            });
 
 
 

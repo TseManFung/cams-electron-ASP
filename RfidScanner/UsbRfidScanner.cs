@@ -33,7 +33,8 @@ namespace Campus_Asset_Management_System.RfidScanner
         private List<String> ConnectedDeviceList = new List<String>();
         private Dictionary<String, RfidReaderInformaion> DevicesInformation = new Dictionary<String, RfidReaderInformaion>();
         private String password = "12345678";
-        private String defaultPassword = "00000000";
+        private const String defaultPassword = "00000000";
+        public List<String> isLooping { get; private set; } = new List<string>();
         public UsbRfidScanner()
         {
             _rfidReaderMessage = new RfidReaderMessage(this);
@@ -334,12 +335,151 @@ namespace Campus_Asset_Management_System.RfidScanner
         }
 
         // 開始循環讀取
+        public String StartLoopRead(int indexOfConnectedDeviceList)
+        {
+            try
+            {
+                string ConnID = ConnectedDeviceList[indexOfConnectedDeviceList];
+                return StartLoopRead(ConnID);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
+        public String StartLoopRead(String ConnID)
+        {
+            try
+            {
+                if (isLooping.Contains(ConnID))
+                {
+                    throw new Exception("the device is already looping");
+                }
+                int result = RFIDReader._Tag6C.GetEPC_TID_UserData(ConnID,
+                    RFIDReaderAPI.RFIDReader._RFIDConfig.GetReaderANT(ConnID),
+                    eReadType.Inventory,
+                    0,
+                    2
+                    );
+                if (result != 0)
+                {
+                    throw new Exception("GetEPC_TID_UserData failed: " + result);
+                }
+                return JsonMaker.makeSuccessJson(true);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
 
         // 停止循環讀取
+        public String StopLoopRead(int indexOfConnectedDeviceList)
+        {
+            try
+            {
+                string ConnID = ConnectedDeviceList[indexOfConnectedDeviceList];
+                return StopLoopRead(ConnID);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
+        public String StopLoopRead(String ConnID)
+        {
+            try
+            {
+                if (!isLooping.Contains(ConnID))
+                {
+                    throw new Exception("the device is not looping");
+                }
+                RFIDReader._Tag6C.Stop(ConnID);
+                return JsonMaker.makeSuccessJson(true);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
 
         // 寫入data to 標籤
+        // i do not want to write
 
         // lock 標籤
+        //private String LockTag(int indexOfConnectedDeviceList)
+        //{
+        //    try
+        //    {
+        //        string ConnID = ConnectedDeviceList[indexOfConnectedDeviceList];
+        //        return LockTag(ConnID);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return JsonMaker.makeErrorJson(e);
+        //    }
+        //}
+
+        //private String LockTag(String ConnID)
+        //{
+        //    try
+        //    {
+        //        int result = RFIDReader._Tag6C.Lock(ConnID, RFIDReaderAPI.RFIDReader._RFIDConfig.GetReaderANT(ConnID),eLockArea.epc|eLockArea.AccessPassword|eLockArea.tid|eLockArea.userdata|eLockArea.DestroyPassword,eLockType.Lock);
+        //        if (result != 0)
+        //        {
+        //            throw new Exception("LockTag failed: " + result);
+        //        }
+        //        return JsonMaker.makeSuccessJson(true);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return JsonMaker.makeErrorJson(e);
+        //    }
+        //}
+
+        // set password
+        public String SetTagPassword(int indexOfConnectedDeviceList)
+        {
+            try
+            {
+                String ConnID = ConnectedDeviceList[indexOfConnectedDeviceList];
+                return SetTagPassword(ConnID);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
+
+        public String SetTagPassword(String ConnID)
+        {
+            try
+            {
+                string result = RFIDReader._Tag6C.WriteDestroyPassWord(ConnID, RFIDReaderAPI.RFIDReader._RFIDConfig.GetReaderANT(ConnID), password, accessPassword: password);
+                if (result == "8")
+                {
+                    string result1 = RFIDReader._Tag6C.WriteDestroyPassWord(ConnID, RFIDReaderAPI.RFIDReader._RFIDConfig.GetReaderANT(ConnID), password, accessPassword: defaultPassword);
+                    if (result1 != "0")
+                    {
+                        throw new Exception("WriteDestroyPassWord failed: " + result);
+                    }
+                    string result2 = RFIDReader._Tag6C.WriteAccessPassWord(ConnID, RFIDReaderAPI.RFIDReader._RFIDConfig.GetReaderANT(ConnID), password, accessPassword: defaultPassword);
+                    if (result2 != "0")
+                    {
+                        throw new Exception("WriteAccessPassWord failed: " + result);
+                    }
+                }
+                else if (result != "0")
+                {
+                    throw new Exception("WriteDestroyPassWord failed: " + result);
+                }
+                return JsonMaker.makeSuccessJson(true);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+        }
 
 
     }
