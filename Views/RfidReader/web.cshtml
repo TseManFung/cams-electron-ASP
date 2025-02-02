@@ -18,170 +18,177 @@
 			border-radius: 5px;
 		}
 	</style>
+	<script>
+		function goUrl() {
+			var url = document.getElementById("url").value;
+			window.location.href = url;
+		}
+	</script>
 </head>
 <body>
-	<button onclick="window.location.href = 'https://github.com/ElectronNET/Electron.NET'">
+	<input type="text" name="link" value="" id="url" />
+	<button onclick="goUrl()">
 		test netweb
 	</button>
-    <h1>API 文件</h1>
+	<h1>API 文件</h1>
 
-    <h2>1. 取得 USB 裝置列表</h2>
-    <p><strong>Call Event Name:</strong> getUsbDeviceList</p>
-    <p><strong>需要的參數:</strong> 無</p>
-    <p><strong>回覆的 Event Name:</strong> replyGetUsbDeviceList</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "devices": [string]
+	<h2>1. 取得 USB 裝置列表</h2>
+	<p><strong>Call Event Name:</strong> getUsbDeviceList</p>
+	<p><strong>需要的參數:</strong> 無</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetUsbDeviceList</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"devices": [string]
 }</pre>
 
-    <h2>2. 連接 RFID Reader</h2>
-    <p><strong>Call Event Name:</strong> connectUsbRfidReader</p>
-    <p><strong>需要的參數:</strong> indexOfUsbDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyConnectUsbRfidReader</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>2. 連接 RFID Reader</h2>
+	<p><strong>Call Event Name:</strong> connectUsbRfidReader</p>
+	<p><strong>需要的參數:</strong> indexOfUsbDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyConnectUsbRfidReader</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>3. 取得已連接裝置列表</h2>
-    <p><strong>Call Event Name:</strong> getConnectedDeviceList</p>
-    <p><strong>需要的參數:</strong> 無</p>
-    <p><strong>回覆的 Event Name:</strong> replyGetConnectedDeviceList</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "devices": [string]
+	<h2>3. 取得已連接裝置列表</h2>
+	<p><strong>Call Event Name:</strong> getConnectedDeviceList</p>
+	<p><strong>需要的參數:</strong> 無</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetConnectedDeviceList</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"devices": [string]
 }</pre>
 
-    <h2>4. 斷開單個 RFID Reader</h2>
-    <p><strong>Call Event Name:</strong> disconnectUsbRfidReader</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyDisconnectUsbRfidReader</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>4. 斷開單個 RFID Reader</h2>
+	<p><strong>Call Event Name:</strong> disconnectUsbRfidReader</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyDisconnectUsbRfidReader</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>5. 斷開所有 RFID Reader</h2>
-    <p><strong>Call Event Name:</strong> disconnectAllUsbRfidReader</p>
-    <p><strong>需要的參數:</strong> 無</p>
-    <p><strong>回覆的 Event Name:</strong> replyDisconnectAllUsbRfidReader</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>5. 斷開所有 RFID Reader</h2>
+	<p><strong>Call Event Name:</strong> disconnectAllUsbRfidReader</p>
+	<p><strong>需要的參數:</strong> 無</p>
+	<p><strong>回覆的 Event Name:</strong> replyDisconnectAllUsbRfidReader</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>6. 檢查連接狀態</h2>
-    <p><strong>Call Event Name:</strong> checkConnectionStatus</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyCheckConnectionStatus</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "isConnected": bool
+	<h2>6. 檢查連接狀態</h2>
+	<p><strong>Call Event Name:</strong> checkConnectionStatus</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyCheckConnectionStatus</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"isConnected": bool
 }</pre>
 
-    <h2>7. 取得 RFID Reader 資訊</h2>
-    <p><strong>Call Event Name:</strong> getRfidReaderInformation</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyGetRfidReaderInformation</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "information": {
-        "minPower": int,
-        "maxPower": int,
-        "numOfAntenna": int,
-        "bandList": [int],
-        "listOfRfidProtocol": [int]
-    }
+	<h2>7. 取得 RFID Reader 資訊</h2>
+	<p><strong>Call Event Name:</strong> getRfidReaderInformation</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetRfidReaderInformation</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"information": {
+		"minPower": int,
+		"maxPower": int,
+		"numOfAntenna": int,
+		"bandList": [int],
+		"listOfRfidProtocol": [int]
+	}
 }</pre>
 
-    <h2>8. 取得天線啟用狀態</h2>
-    <p><strong>Call Event Name:</strong> getAntennaEnable</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyGetAntennaEnable</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "antennaEnable": [int]
+	<h2>8. 取得天線啟用狀態</h2>
+	<p><strong>Call Event Name:</strong> getAntennaEnable</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetAntennaEnable</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"antennaEnable": [int]
 }</pre>
 
-    <h2>9. 設定天線啟用狀態</h2>
-    <p><strong>Call Event Name:</strong> setAntennaEnable</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int, antennaEnable:bool[]</p>
-    <p><strong>回覆的 Event Name:</strong> replySetAntennaEnable</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>9. 設定天線啟用狀態</h2>
+	<p><strong>Call Event Name:</strong> setAntennaEnable</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int, antennaEnable:bool[]</p>
+	<p><strong>回覆的 Event Name:</strong> replySetAntennaEnable</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>10. 取得天線功率</h2>
-    <p><strong>Call Event Name:</strong> getAntennaPower</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyGetAntennaPower</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "power": [int]
+	<h2>10. 取得天線功率</h2>
+	<p><strong>Call Event Name:</strong> getAntennaPower</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetAntennaPower</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"power": [int]
 }</pre>
 
-    <h2>11. 設定天線功率</h2>
-    <p><strong>Call Event Name:</strong> setAntennaPower</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int, power:int[]</p>
-    <p><strong>回覆的 Event Name:</strong> replySetAntennaPower</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>11. 設定天線功率</h2>
+	<p><strong>Call Event Name:</strong> setAntennaPower</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int, power:int[]</p>
+	<p><strong>回覆的 Event Name:</strong> replySetAntennaPower</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>12. 單次讀取</h2>
-    <p><strong>Call Event Name:</strong> singleRead</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replySingleRead</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "tag": Tag_Model
+	<h2>12. 單次讀取</h2>
+	<p><strong>Call Event Name:</strong> singleRead</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replySingleRead</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"tag": Tag_Model
 }</pre>
-    <p><strong>必須使用的事件監聽器:</strong></p>
-    <ul>
-        <li>newScannedTag</li>
-        <li>scanningOver</li>
-        <li>deviceDisconnected</li>
-    </ul>
+	<p><strong>必須使用的事件監聽器:</strong></p>
+	<ul>
+		<li>newScannedTag</li>
+		<li>scanningOver</li>
+		<li>deviceDisconnected</li>
+	</ul>
 
-    <h2>13. 開始循環讀取</h2>
-    <p><strong>Call Event Name:</strong> startLoopRead</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyStartLoopRead</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>13. 開始循環讀取</h2>
+	<p><strong>Call Event Name:</strong> startLoopRead</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyStartLoopRead</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
-    <p><strong>必須使用的事件監聽器:</strong></p>
-    <ul>
-        <li>newScannedTag</li>
-        <li>scanningOver</li>
-        <li>deviceDisconnected</li>
-    </ul>
+	<p><strong>必須使用的事件監聽器:</strong></p>
+	<ul>
+		<li>newScannedTag</li>
+		<li>scanningOver</li>
+		<li>deviceDisconnected</li>
+	</ul>
 
-    <h2>14. 停止循環讀取</h2>
-    <p><strong>Call Event Name:</strong> stopLoopRead</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replyStopLoopRead</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
-}</pre>
-
-    <h2>15. 設定密碼</h2>
-    <p><strong>Call Event Name:</strong> setPassword</p>
-    <p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
-    <p><strong>回覆的 Event Name:</strong> replySetPassword</p>
-    <p><strong>回覆的 JSON Field Name:</strong></p>
-    <pre>{
-    "success": bool
+	<h2>14. 停止循環讀取</h2>
+	<p><strong>Call Event Name:</strong> stopLoopRead</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyStopLoopRead</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
 }</pre>
 
-    <h2>Error JSON</h2>
-    <p><strong>JSON Field Name:</strong></p>
-    <pre>{
-    "error": string
+	<h2>15. 設定密碼</h2>
+	<p><strong>Call Event Name:</strong> setPassword</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replySetPassword</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"success": bool
+}</pre>
+
+	<h2>Error JSON</h2>
+	<p><strong>JSON Field Name:</strong></p>
+	<pre>{
+	"error": string
 }</pre>
 </body>
 </html>
