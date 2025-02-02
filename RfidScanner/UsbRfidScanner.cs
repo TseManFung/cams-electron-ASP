@@ -396,6 +396,7 @@ namespace Campus_Asset_Management_System.RfidScanner
                     throw new Exception("the device is not looping");
                 }
                 RFIDReader._Tag6C.Stop(ConnID);
+                isLooping.Remove(ConnID);
                 return JsonMaker.makeSuccessJson(true);
             }
             catch (Exception e)
