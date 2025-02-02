@@ -15,4 +15,5 @@ for start the app
 
 for build app
 > electronize build /target win
+
 In addition to win, you can also specify osx, linux
