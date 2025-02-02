@@ -24,7 +24,7 @@
 	<button id="stop">Stop</button>
 	<button id="clear">Clear</button>
 	<br>
-	<div id="output"></div>
+	<div id="output" style="overflow: hidden;"></div>
 
 	<script>
 
@@ -61,6 +61,9 @@
 			showDegubMsg("replySingleRead");
 			showDegubMsg("newScannedTag");
 			showDegubMsg("scanningOver");
+			showDegubMsg("replyGetRfidReaderInformation");
+			showDegubMsg("replyStartLoopRead");
+			showDegubMsg("replyStopLoopRead");
 
 		}
 
@@ -86,12 +89,14 @@
 			// })
 
 			// read Sigle
-			electron_1.ipcRenderer.send("singleRead", 0);
+			//electron_1.ipcRenderer.send("singleRead", 0);
 
+			// start read loop
+			electron_1.ipcRenderer.send("startLoopRead", 0);
 		});
 
 		document.getElementById("stop")?.addEventListener("click", () => {
-			electron_1.ipcRenderer.send("stop", 0);
+			electron_1.ipcRenderer.send("stopLoopRead", 0);
 		});
 
 	</script>

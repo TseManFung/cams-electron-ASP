@@ -365,6 +365,7 @@ namespace Campus_Asset_Management_System.RfidScanner
                 {
                     throw new Exception("GetEPC_TID_UserData failed: " + result);
                 }
+                isLooping.Add(ConnID);
                 return JsonMaker.makeSuccessJson(true);
             }
             catch (Exception e)
