@@ -26,9 +26,9 @@
 	</script>
 </head>
 <body>
-	<input type="text" name="link" value="" id="url" />
+	<input type="text" name="link" value="" id="url"/>
 	<button onclick="goUrl()">
-		test netweb
+		test website
 	</button>
 	<h1>API 文件</h1>
 
@@ -183,6 +183,24 @@
 	<p><strong>回覆的 JSON Field Name:</strong></p>
 	<pre>{
 	"success": bool
+}</pre>
+
+	<h2>16. 檢查循環狀態</h2>
+	<p><strong>Call Event Name:</strong> checkLoopStatus</p>
+	<p><strong>需要的參數:</strong> indexOfConnectedDeviceList:int</p>
+	<p><strong>回覆的 Event Name:</strong> replyCheckLoopStatus</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"isLooping": bool
+}</pre>
+
+	<h2>17. 取得已連接裝置的索引</h2>
+	<p><strong>Call Event Name:</strong> getIndexOfConnectedDevice</p>
+	<p><strong>需要的參數:</strong> ConnID:string</p>
+	<p><strong>回覆的 Event Name:</strong> replyGetIndexOfConnectedDevice</p>
+	<p><strong>回覆的 JSON Field Name:</strong></p>
+	<pre>{
+	"indexOfConnectedDevice": int
 }</pre>
 
 	<h2>Error JSON</h2>

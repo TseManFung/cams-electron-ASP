@@ -283,6 +283,21 @@ namespace Campus_Asset_Management_System.Controllers
                 }
             });
 
+            // check loop status
+            Electron.IpcMain.On("checkLoopStatus", (indexOfConnectedDeviceList) =>
+            {
+                try
+                {
+                    int i = Convert.ToInt32(indexOfConnectedDeviceList);
+                    Electron.IpcMain.Send(getMainWindow(), "replyCheckLoopStatus", _rfidScanner.CheckLoopStatus(i));
+                }
+                catch (Exception e)
+                {
+                    Electron.IpcMain.Send(getMainWindow(), "replyCheckLoopStatus", JsonMaker.makeErrorJson(e));
+                }
+            }
+            );
+
 
 
 

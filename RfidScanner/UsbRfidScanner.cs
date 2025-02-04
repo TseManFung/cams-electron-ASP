@@ -484,5 +484,34 @@ namespace Campus_Asset_Management_System.RfidScanner
         }
 
 
+        // check loop status
+        public String CheckLoopStatus(int indexOfConnectedDeviceList)
+        {
+            return CheckLoopStatus(ConnectedDeviceList[indexOfConnectedDeviceList]);
+        }
+        public String CheckLoopStatus(String ConnID)
+        {
+            return JsonMaker.makeIsLoopingJson(isLooping.Contains(ConnID));
+        }
+
+        // get index of connected device
+        public String GetIndexOfConnectedDevice(String ConnID)
+        {
+            try {
+                if (ConnectedDeviceList.Contains(ConnID))
+                {
+                    return JsonMaker.makeIndexOfConnectedDeviceJson(ConnectedDeviceList.IndexOf(ConnID));
+                }
+                else
+                {
+                    throw new Exception("the device is not connected");
+                }
+            }catch (Exception e) {
+                return JsonMaker.makeErrorJson(e);
+            }
+
+        }
+
+
     }
 }

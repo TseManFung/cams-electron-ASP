@@ -72,5 +72,21 @@ namespace Campus_Asset_Management_System.RfidScanner
             });
         }
 
+        public static string makeIsLoopingJson(bool isLooping)
+        {
+            return JsonSerializer.Serialize(new
+            {
+                isLooping
+            });
+        }
+
+        public static string makeIndexOfConnectedDeviceJson(int indexOfConnectedDevice)
+        {
+            return JsonSerializer.Serialize(new
+            {
+                indexOfConnectedDevice
+            });
+        }
+
     }
 }
