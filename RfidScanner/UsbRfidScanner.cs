@@ -2,6 +2,7 @@
 using RFIDReaderAPI;
 using RFIDReaderAPI.Interface;
 using RFIDReaderAPI.Models;
+using System;
 using System.Reflection.Metadata;
 
 namespace Campus_Asset_Management_System.RfidScanner
@@ -51,7 +52,12 @@ namespace Campus_Asset_Management_System.RfidScanner
         public String ConnectUsbRfidReader(int indexOfUsbDeviceList)
         {
             try
-            {
+            {   
+                if(usbDeviceList == null)
+                {
+                    usbDeviceList = RFIDReader.GetUsbHidDeviceList();
+                }
+
                 if (indexOfUsbDeviceList < 0 || indexOfUsbDeviceList >= usbDeviceList.Count)
                 {
                     throw new Exception("indexOfUsbDeviceList is out of range");
@@ -97,7 +103,9 @@ namespace Campus_Asset_Management_System.RfidScanner
         // 斷開單個 RFID Reader
         public String DisconnectUsbRfidReader(int indexOfConnectedDeviceList)
         {
-            if (ConnectedDeviceList.Count == 0)
+            try
+            {
+                if (ConnectedDeviceList.Count == 0)
             {
                 throw new Exception("ConnectedDeviceList is empty");
             }
@@ -109,17 +117,28 @@ namespace Campus_Asset_Management_System.RfidScanner
             RFIDReader.CloseConn(ConnID);
             ConnectedDeviceList.RemoveAt(indexOfConnectedDeviceList);
             return JsonMaker.makeDisconnectReaderJson(indexOfConnectedDeviceList, true);
+            }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
         }
         public String DisconnectUsbRfidReader(String ConnID)
         {
-            if (ConnectedDeviceList.Count == 0)
+            try
             {
-                throw new Exception("ConnectedDeviceList is empty");
-            }
-            RFIDReader.CloseConn(ConnID);
-            ConnectedDeviceList.Remove(ConnID);
-            return JsonMaker.makeDisconnectReaderJson(ConnectedDeviceList.IndexOf(ConnID), true);
+                int indexOfConnectedDeviceList = ConnectedDeviceList.IndexOf(ConnID);
+                if (indexOfConnectedDeviceList == -1)
+                {
+                    throw new Exception("the device is not connected");
+                }
+                return DisconnectUsbRfidReader(indexOfConnectedDeviceList);
         }
+            catch (Exception e)
+            {
+                return JsonMaker.makeErrorJson(e);
+            }
+}
 
         // 斷開所有 RFID Reader
         public String DisconnectAllUsbRfidReader()
@@ -174,7 +193,7 @@ namespace Campus_Asset_Management_System.RfidScanner
             return JsonMaker.makeRfidReaderInformationJson(ObjInfo);
         }
 
-        private RfidReaderInformaion CheckDeviceInformation(int indexOfConnectedDeviceList)
+        public RfidReaderInformaion CheckDeviceInformation(int indexOfConnectedDeviceList)
         {
             return CheckDeviceInformation(ConnectedDeviceList[indexOfConnectedDeviceList]);
         }
@@ -281,9 +300,9 @@ namespace Campus_Asset_Management_System.RfidScanner
                 {
                     if (power[i] < deviceinfo.minPower || power[i] > deviceinfo.maxPower)
                     {
-                        throw new Exception($"the power of antenna{i + 1} is out of range");
+                        throw new Exception($"the power of antenna{i + 1} is out of range, minPower is {deviceinfo.minPower}, maxPower is {deviceinfo.maxPower}");
                     }
-                    powerDic[i] = power[i];
+                    powerDic[i+1] = power[i];
                 }
                 int result = RFIDReader._RFIDConfig.SetANTPowerParam(ConnID, powerDic);
 

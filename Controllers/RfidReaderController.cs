@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Campus_Asset_Management_System.RfidScanner;
 using RFIDReaderAPI.Interface;
 using RFIDReaderAPI.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Campus_Asset_Management_System.Controllers
 {
@@ -15,7 +16,7 @@ namespace Campus_Asset_Management_System.Controllers
     {
         private readonly ILogger<RfidReaderController> _logger;
         private readonly UsbRfidScanner _rfidScanner;
-        
+
 
         public RfidReaderController(ILogger<RfidReaderController> logger)
         {
@@ -128,56 +129,16 @@ namespace Campus_Asset_Management_System.Controllers
             );
 
             // get antenna Enable status
-            Electron.IpcMain.On("getAntennaEnable", (args) =>
+            Electron.IpcMain.On("getAntennaEnable", (indexOfConnectedDeviceList) =>
             {
                 try
                 {
-                    if (args == null)
-                    {
-                        throw new Exception("args is null");
-                    }
-                    int[] arguments = args as int[];
-                    if (arguments == null)
-                    {
-                        throw new Exception("args is not an int[]");
-                    }
-                    if (arguments.Length == 2 &&
-                        int.TryParse(arguments[0].ToString(), out int indexOfConnectedDeviceList) &&
-                        int.TryParse(arguments[1].ToString(), out int antennaIndex))
-                    {
-                        Electron.IpcMain.Send(getMainWindow(), "replyGetAntennaEnable", _rfidScanner.GetAntennaEnableStatus(indexOfConnectedDeviceList));
-                    }
+                    int i = Convert.ToInt32(indexOfConnectedDeviceList);
+                    Electron.IpcMain.Send(getMainWindow(), "replyGetAntennaEnable", _rfidScanner.GetAntennaEnableStatus(i));
                 }
                 catch (Exception e)
                 {
                     Electron.IpcMain.Send(getMainWindow(), "replyGetAntennaEnable", JsonMaker.makeErrorJson(e));
-                }
-            });
-
-            // set antenna Enable status
-            Electron.IpcMain.On("setAntennaEnable", (args) =>
-            {
-                try
-                {
-                    if (args == null)
-                    {
-                        throw new Exception("args is null");
-                    }
-                    object[] arguments = args as object[];
-                    if (arguments == null)
-                    {
-                        throw new Exception("args is not an object[]");
-                    }
-                    if (arguments.Length == 2 &&
-                        int.TryParse(arguments[0].ToString(), out int indexOfConnectedDeviceList) &&
-                        arguments[1] is bool[] antennaEnable)
-                    {
-                        Electron.IpcMain.Send(getMainWindow(), "replySetAntennaEnable", _rfidScanner.SetAntennaEnableStatus(indexOfConnectedDeviceList, antennaEnable));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Electron.IpcMain.Send(getMainWindow(), "replySetAntennaEnable", JsonMaker.makeErrorJson(e));
                 }
             });
 
@@ -205,21 +166,93 @@ namespace Campus_Asset_Management_System.Controllers
                     {
                         throw new Exception("args is null");
                     }
-                    object[] arguments = args as object[];
-                    if (arguments == null)
+
+                    // Check if args is a JArray
+                    if (args is JArray jArray)
                     {
-                        throw new Exception("args is not an object[]");
+                        // Convert JArray to object[]
+                        object[] arguments = jArray.ToObject<object[]>();
+
+                        if (arguments.Length == 2 &&
+                            int.TryParse(arguments[0].ToString(), out int indexOfConnectedDeviceList) &&
+                            arguments[1] is JArray powerArray)
+                        {
+                            // Convert JArray to int[]
+                            int[] power = powerArray.Select(p => int.Parse(p.ToString())).ToArray();
+
+                            RfidReaderInformaion rfidReaderInformaion = _rfidScanner.CheckDeviceInformation(indexOfConnectedDeviceList);
+                            int numberOfAntenna = rfidReaderInformaion.numOfAntenna;
+
+                            if (power.Length != numberOfAntenna)
+                            {
+                                throw new Exception($"The number of antenna power is not equal to the number of antenna, Received power: {power.Length}, Number of antenna: {numberOfAntenna}");
+                            }
+
+                            // Now you can use the power array
+                            Electron.IpcMain.Send(getMainWindow(), "replySetAntennaPower", _rfidScanner.SetAntennaPower(indexOfConnectedDeviceList, power));
+                        }
+                        else
+                        {
+                            throw new Exception($"Invalid arguments format, Received args: {args} of type {args.GetType()}");
+                        }
                     }
-                    if (arguments.Length == 2 &&
-                        int.TryParse(arguments[0].ToString(), out int indexOfConnectedDeviceList) &&
-                        arguments[1] is int[] power)
+                    else
                     {
-                        Electron.IpcMain.Send(getMainWindow(), "replySetAntennaPower", _rfidScanner.SetAntennaPower(indexOfConnectedDeviceList, power));
+                        throw new Exception($"args is not a JArray, Received args: {args} of type {args.GetType()}");
                     }
                 }
                 catch (Exception e)
                 {
                     Electron.IpcMain.Send(getMainWindow(), "replySetAntennaPower", JsonMaker.makeErrorJson(e));
+                }
+            });
+
+            // set antenna Enable status
+            Electron.IpcMain.On("setAntennaEnable", (args) =>
+            {
+                try
+                {
+                    if (args == null)
+                    {
+                        throw new Exception("args is null");
+                    }
+
+                    // Check if args is a JArray
+                    if (args is JArray jArray)
+                    {
+                        // Convert JArray to object[]
+                        object[] arguments = jArray.ToObject<object[]>();
+
+                        if (arguments.Length == 2 &&
+                            int.TryParse(arguments[0].ToString(), out int indexOfConnectedDeviceList) &&
+                            arguments[1] is JArray enableArray)
+                        {
+                            // Convert JArray to bool[]
+                            bool[] antennaEnable = enableArray.Select(e => bool.Parse(e.ToString())).ToArray();
+
+                            RfidReaderInformaion rfidReaderInformaion = _rfidScanner.CheckDeviceInformation(indexOfConnectedDeviceList);
+                            int numberOfAntenna = rfidReaderInformaion.numOfAntenna;
+
+                            if (antennaEnable.Length != numberOfAntenna)
+                            {
+                                throw new Exception($"The number of antenna enable is not equal to the number of antenna, Received enable: {antennaEnable.Length}, Number of antenna: {numberOfAntenna}");
+                            }
+
+                            Electron.IpcMain.Send(getMainWindow(), "replySetAntennaEnable", _rfidScanner.SetAntennaEnableStatus(indexOfConnectedDeviceList, antennaEnable));
+                        }
+                        else
+                        {
+                            throw new Exception($"Invalid arguments format, Received args: {args} of type {args.GetType()}");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"args is not a JArray, Received args: {args} of type {args.GetType()}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Electron.IpcMain.Send(getMainWindow(), "replySetAntennaEnable", JsonMaker.makeErrorJson(e));
                 }
             });
 
@@ -317,7 +350,7 @@ namespace Campus_Asset_Management_System.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-     
+
 
     }
 }

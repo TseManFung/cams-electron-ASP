@@ -22,7 +22,10 @@
 	<button id="disconnectBtn">Disconnect</button>
 	<br>
 	<br />
-	set power: <input type="number" id="power" value="30" min="1" max="33" step="1">
+	set power:
+	<input type="number" id="power" value="30" min="1" max="33" step="1"> |
+	numberOfAntenna:
+	<input type="number" id="numberOfAntenna" value="1" min="1" step="1">
 	<button id="setPower">Set Power</button>
 	<br>
 	<br />
@@ -72,6 +75,7 @@
 			showDegubMsg("replyStopLoopRead");
 			showDegubMsg("replyDisconnectUsbRfidReader");
 			showDegubMsg("replySetAntennaPower");
+			showDegubMsg("DEBUG");
 
 		}
 
@@ -79,13 +83,13 @@
 			addIpcRendererOn() // 先開好event listenner最安全
 
 			electron_1.ipcRenderer.send("getUsbDeviceList");
-			
+
 		};
 		// Connect button event
 		document.getElementById("connectBtn")?.addEventListener("click", () => {
 			// 我在這hardcode 0，實際上應該是從availableDevice取得
 			electron_1.ipcRenderer.send("connectUsbRfidReader", 0);
-			
+
 		});
 
 		document.getElementById("execute")?.addEventListener("click", () => {
@@ -119,7 +123,8 @@
 		document.getElementById("setPower")?.addEventListener("click", () => {
 			// 我在這hardcode 0，實際上應該是從availableDevice取得
 			try {
-				electron_1.ipcRenderer.send("setAntennaPower", [0, [document.getElementById("power").value, document.getElementById("power").value]]);
+
+				electron_1.ipcRenderer.send("setAntennaPower", [0, Array(parseInt(document.getElementById("numberOfAntenna").value)).fill(parseInt(document.getElementById("power").value))]);
 			} catch (error) {
 				console.log(error);
 			}
